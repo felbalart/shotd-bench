@@ -36,13 +36,17 @@ class ToolCallingAgent(Agent):
             {"role": "system", "content": self.wiki},
             {"role": "user", "content": obs},
         ]
+        # Anthropic's API rejects sampling params like temperature
+        sampling_kwargs = (
+            {} if self.provider == "anthropic" else {"temperature": self.temperature}
+        )
         for _ in range(max_num_steps):
             res = completion(
                 messages=messages,
                 model=self.model,
                 custom_llm_provider=self.provider,
                 tools=self.tools_info,
-                temperature=self.temperature,
+                **sampling_kwargs,
             )
             next_message = res.choices[0].message.model_dump()
             total_cost += res._hidden_params["response_cost"] or 0

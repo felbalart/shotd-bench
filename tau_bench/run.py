@@ -18,7 +18,10 @@ from tau_bench.envs.user import UserStrategy
 
 
 def run(config: RunConfig) -> List[EnvRunResult]:
-    assert config.env in ["retail", "airline"], "Only retail and airline envs are supported"
+    assert config.env in ["retail", "airline", "photography"], "Only retail, airline and photography envs are supported"
+    if config.env == "photography":
+        # Photography observations include images, which only the tool-calling agent passes through
+        assert config.agent_strategy == "tool-calling", "The photography env only supports the tool-calling agent strategy"
     assert config.model_provider in provider_list, "Invalid model provider"
     assert config.user_model_provider in provider_list, "Invalid user model provider"
     assert config.agent_strategy in ["tool-calling", "act", "react", "few-shot"], "Invalid agent strategy"
@@ -38,6 +41,8 @@ def run(config: RunConfig) -> List[EnvRunResult]:
         user_model=config.user_model,
         user_provider=config.user_model_provider,
         task_split=config.task_split,
+        judge_model=config.judge_model,
+        judge_provider=config.judge_model_provider,
     )
     agent = agent_factory(
         tools_info=env.tools_info,
@@ -71,6 +76,8 @@ def run(config: RunConfig) -> List[EnvRunResult]:
                 task_split=config.task_split,
                 user_provider=config.user_model_provider,
                 task_index=idx,
+                judge_model=config.judge_model,
+                judge_provider=config.judge_model_provider,
             )
 
             print(f"Running task {idx}")

@@ -1,6 +1,6 @@
 # Copyright Sierra
 
-from pydantic import BaseModel
+from pydantic import BaseModel, SerializeAsAny
 from typing import List, Dict, Any, Optional, Union
 
 RESPOND_ACTION_NAME = "respond"
@@ -29,9 +29,21 @@ class RewardActionInfo(BaseModel):
     gt_data_hash: str
 
 
+class ElementVerdict(BaseModel):
+    element: str
+    passed: bool
+    reason: str
+
+
+class RewardJudgeInfo(BaseModel):
+    r_judge: float
+    elements: List[ElementVerdict]
+    judge_cost: Optional[float] = None
+
+
 class RewardResult(BaseModel):
     reward: float
-    info: Union[RewardOutputInfo, RewardActionInfo]
+    info: Union[RewardOutputInfo, RewardActionInfo, RewardJudgeInfo]
     actions: List[Action]
 
 
@@ -43,7 +55,8 @@ class SolveResult(BaseModel):
 
 
 class EnvInfo(BaseModel):
-    task: Task
+    # SerializeAsAny keeps fields of Task subclasses (e.g. PhotographyTask) in results
+    task: SerializeAsAny[Task]
     source: Optional[str] = None
     user_cost: Optional[float] = None
     reward_info: Optional[RewardResult] = None
@@ -57,7 +70,8 @@ class EnvResponse(BaseModel):
 
 
 class EnvResetResponse(BaseModel):
-    observation: str
+    # A list of content parts (text and image_url) for multimodal environments
+    observation: Union[str, List[Dict[str, Any]]]
     info: EnvInfo
 
 
@@ -88,3 +102,5 @@ class RunConfig(BaseModel):
     shuffle: int = 0
     user_strategy: str = "llm"
     few_shot_displays_path: Optional[str] = None
+    judge_model: Optional[str] = None
+    judge_model_provider: Optional[str] = None

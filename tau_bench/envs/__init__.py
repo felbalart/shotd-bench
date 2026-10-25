@@ -12,6 +12,8 @@ def get_env(
     task_split: str,
     user_provider: Optional[str] = None,
     task_index: Optional[int] = None,
+    judge_model: Optional[str] = None,
+    judge_provider: Optional[str] = None,
 ) -> Env:
     if env_name == "retail":
         from tau_bench.envs.retail import MockRetailDomainEnv
@@ -32,6 +34,18 @@ def get_env(
             task_split=task_split,
             user_provider=user_provider,
             task_index=task_index,
+        )
+    elif env_name == "photography":
+        from tau_bench.envs.photography import PhotographyDomainEnv
+
+        return PhotographyDomainEnv(
+            user_strategy=user_strategy,
+            user_model=user_model,
+            task_split=task_split,
+            user_provider=user_provider,
+            task_index=task_index,
+            judge_model=judge_model,
+            judge_provider=judge_provider,
         )
     else:
         raise ValueError(f"Unknown environment: {env_name}")
