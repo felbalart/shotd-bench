@@ -1,158 +1,119 @@
-# τ-bench: A Benchmark for Tool-Agent-User Interaction in Real-World Domains
+# shotd-bench: a photography environment for τ-bench
 
-**⚠️ WARNING: The tasks in this repo are not updated.** This repository contains outdated versions of the airline and retail tasks. Please use [τ³-bench](https://github.com/sierra-research/tau2-bench) for the latest fixed tasks and new domains.
+shotd-bench is a fork of [τ-bench](https://github.com/sierra-research/tau-bench) that adds a **`photography`** environment. In it, an agent acts as a professional photography consultant. It helps a simulated user plan how to take a specific photo with their phone, using the user's request, a reference photo of the result they want, and a photo of where they are now.
 
-**❗News**: The [τ²-bench](https://github.com/sierra-research/tau2-bench) repository has been updated to [τ³-bench](https://github.com/sierra-research/tau2-bench), which includes a new `banking` domain, a `voice` evaluation modality, as well as fixes to the `airline` and `retail` domain tasks. Please navigate to the [τ³-bench repository](https://github.com/sierra-research/tau2-bench) to use the latest version of this benchmark.
+The tasks come from [shotdirector-benchmark](https://github.com/felbalart/shotdirector-benchmark), a benchmark for real-time mobile phone photography guidance. The original `retail` and `airline` environments are still included.
 
----
+## How the photography environment works
 
-We propose $\tau$-bench, a benchmark emulating dynamic conversations between a user (simulated by language models) and a language agent provided with domain-specific API tools and policy guidelines.
+Each task gives the user:
 
-## Leaderboard
+- **A goal**, such as "I want a professional headshot for my LinkedIn."
+- **A reference photo** showing the kind of result they want.
+- **A scene photo** they just took of the place where they are.
 
-### Airline
+A run goes like this:
 
-| Strategy       | Pass^1 | Pass^2 | Pass^3 | Pass^4 |
-| -------------- | ------ | ------ | ------ | ------ |
-| [TC (claude-3-5-sonnet-20241022)](https://www.anthropic.com/news/3-5-models-and-computer-use)      | **0.460**     | **0.326**     | **0.263**     | **0.225**     |
-| [TC (gpt-4o)](https://platform.openai.com/docs/guides/function-calling)     | 0.420     | 0.273     | 0.220     | 0.200     |
-| [TC (claude-3-5-sonnet-20240620)](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)      | 0.360     | 0.224     | 0.169     | 0.139     |
-| [TC (mistral-large-2407)](https://docs.mistral.ai/capabilities/function_calling/)     | ??     | ??     | ??     | ??     |
-| [TC (gpt-4o-mini)](https://platform.openai.com/docs/guides/function-calling)     | 0.225     | 0.140     | 0.110     | 0.100     |
-| [Act](https://arxiv.org/abs/2210.03629) (gpt-4o)     | 0.365 | 0.217 | 0.160 | 0.140     |
-| [ReAct](https://arxiv.org/abs/2210.03629) (gpt-4o)     | 0.325 | 0.233 | 0.185 | 0.160     |
+1. The simulated user states the goal. Both photos are attached to their first message. The user simulator sees the same photos, so it can answer questions about its own scene.
+2. The agent studies the photos, can ask the user questions, and then calls the `submit_photography_plan` tool. The plan covers framing and composition, lighting, background, subject and pose, camera settings, and ordered steps. Submitting the plan ends the conversation.
+3. An LLM judge grades the plan. It sees the goal, both photos, the task's ground truth and the plan, and decides pass or fail for each of the task's required plan elements (for example "Suitable lighting for clear facial visibility" or "Feasible actions based on the observed scene"). The reward is 1 only if every element passes, matching τ-bench's pass/fail scoring. If the agent never submits a plan, the reward is 0.
 
-### Retail
+The results file records each element's verdict and the judge's reason, along with the judge's cost.
 
-| Strategy       | Pass^1 | Pass^2 | Pass^3 | Pass^4 |
-| -------------- | ------ | ------ | ------ | ------ |
-| [TC (claude-3-5-sonnet-20241022)](https://www.anthropic.com/news/3-5-models-and-computer-use)      | **0.692**     | **0.576**     | **0.509**     | **0.462**     |
-| [TC (gpt-4o)](https://platform.openai.com/docs/guides/function-calling)     | 0.604     | 0.491     | 0.430     | 0.383     |
-| [TC (claude-3-5-sonnet-20240620)](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)      | 0.626     | 0.506     | 0.435     | 0.387     |
-| [TC (mistral-large-2407)](https://docs.mistral.ai/capabilities/function_calling/)     | ??     | ??     | ??     | ??     |
-| [TC (gpt-4o-mini)](https://platform.openai.com/docs/guides/function-calling)     | ??     | ??     | ??     | ??     |
-| [Act](https://arxiv.org/abs/2210.03629) (gpt-4o)     | ??     | ??     | ??     | ??     |
-| [ReAct](https://arxiv.org/abs/2210.03629) (gpt-4o)     | ??     | ??     | ??     | ??     |
+### Tasks
 
-*TC = `tool-calling` strategy (the function-calling strategy reported in the paper)
+| ID | Status | Description |
+| --- | --- | --- |
+| c01 | Runnable | Professional LinkedIn headshot in a living room at night |
+| c02–c05 | Draft, not runnable | Written from short descriptions; they need photos and a review before use |
+
+Runnable tasks are in [`tau_bench/envs/photography/tasks_test.py`](tau_bench/envs/photography/tasks_test.py). Drafts are in [`tasks_draft.py`](tau_bench/envs/photography/tasks_draft.py) and are not loaded by any run.
+
+To add a task, append a `PhotographyTask` to `TASKS_TEST` with:
+
+- `task_id`, `goal_prompt` and `instruction` (the persona and goal given to the user simulator)
+- `reference_image_url` and `scene_image_url` (public image URLs)
+- `expected_state`, `required_plan_elements` and `constraints` (ground truth seen only by the judge)
+
+### Limitations
+
+- Only the `tool-calling` agent strategy is supported, because the other agents can't pass images through.
+- Only the `llm` and `human` user strategies are supported.
+- Photos can only be shared with the user's first message, so tasks where the agent asks the user to take a new photo partway through aren't supported yet.
 
 ## Setup
 
 1. Clone this repository:
 
 ```bash
-git clone https://github.com/sierra-research/tau-bench && cd ./tau-bench
+git clone https://github.com/felbalart/shotd-bench && cd shotd-bench
 ```
 
-2. Install from source (which also installs required packages):
+2. Install from source, which also installs the required packages:
 
 ```bash
 pip install -e .
 ```
 
-3. Set up your OpenAI / Anthropic / Google / Mistral / AnyScale API keys as environment variables.
+3. Create a `.env` file in the repository root with the API keys for the providers you use. `run.py` loads it automatically, and it is gitignored.
 
 ```bash
-OPENAI_API_KEY=...
 ANTHROPIC_API_KEY=...
-GOOGLE_API_KEY=...
-MISTRAL_API_KEY=...
+OPENAI_API_KEY=...
 ```
 
 ## Run
 
-Run a tool-calling agent on the τ-retail environment:
+Run the photography environment with Claude Opus 5.5 as the agent and the judge, and Claude Sonnet 5.5 as the user simulator:
 
 ```bash
-python run.py --agent-strategy tool-calling --env retail --model gpt-4o --model-provider openai --user-model gpt-4o --user-model-provider openai --user-strategy llm --max-concurrency 10
+python run.py --env photography --agent-strategy tool-calling \
+  --model claude-opus-5-5 --model-provider anthropic \
+  --user-model claude-sonnet-5-5 --user-model-provider anthropic \
+  --judge-model claude-opus-5-5 --judge-model-provider anthropic \
+  --user-strategy llm
 ```
 
-Set max concurrency according to your API limit(s).
+If you leave out `--judge-model` and `--judge-model-provider`, the judge uses the user simulator's model.
 
-To run specific tasks, use the `--task-ids` flag. For example:
+Useful flags:
+
+- `--task-ids 0 2` runs only the tasks at those positions in the task list. `--start-index` and `--end-index` select a range.
+- `--max-concurrency 10` runs tasks in parallel. Set it according to your API rate limits.
+- `--num-trials 4` runs each task several times and reports Pass^k.
+
+Results are saved to `results/`, which you can change with `--log-dir`. Each file contains every task's full conversation, reward and judge verdicts.
+
+### Retail and airline
+
+The original environments work as in τ-bench:
 
 ```bash
-python run.py --agent-strategy tool-calling --env retail --model gpt-4o --model-provider openai --user-model gpt-4o --user-model-provider openai --user-strategy llm --max-concurrency 10 --task-ids 2 4 6
+python run.py --env retail --agent-strategy tool-calling \
+  --model claude-opus-5-5 --model-provider anthropic \
+  --user-model claude-sonnet-5-5 --user-model-provider anthropic \
+  --user-strategy llm
 ```
 
-This command will run only the tasks with IDs 2, 4, and 6.
+They also support the `act`, `react` and `few-shot` agent strategies and the `react`, `verify` and `reflection` user strategies. See the [τ-bench README](https://github.com/sierra-research/tau-bench#readme) for details, the leaderboard and the auto error identification tool.
 
-## User simulators
+Note that these retail and airline tasks are outdated. Sierra maintains fixed versions in [τ³-bench](https://github.com/sierra-research/tau2-bench).
 
-By default, we use `gpt-4o` as the user simulator with strategy `llm`. You can use other models by setting the `--user-model` flag, or other strategies by setting the `--user-strategy` flag. For example, run a tool-calling agent with a claude user simulator:
+## Changes from τ-bench
 
-```bash
-python run.py --agent-strategy tool-calling --env retail --model gpt-4o --model-provider openai --max-concurrency 10 --user-model claude-3-5-sonnet-20240620 --user-model-provider anthropic --user-strategy llm
-```
+Besides the photography environment, this fork:
 
-Other strategies:
-
-To run `react` user simulator:
-
-```bash
-python run.py --agent-strategy tool-calling --env retail --model gpt-4o --model-provider openai --max-concurrency 10 --user-model gpt-4o --user-model-provider openai --user-strategy react
-```
-
-Example of a `react` user response:
-
-```md
-Thought:
-I should provide my name and zip code as I wasn't given an email address to use.
-
-User Response:
-Sure, my name is Yusuf Rossi, and my zip code is 19122.
-```
-
-To run `verify` user simulator:
-
-```bash
-python run.py --agent-strategy tool-calling --env retail --model gpt-4o --model-provider openai --max-concurrency 10 --user-model gpt-4o --user-model-provider openai --user-strategy verify
-```
-
-This strategy uses a subsequent LLM verification step to check if the user simulator's response is satisfactory. If not, the user simulator will be prompted to generate a new response.
-
-To run `reflection` user simulator:
-
-```bash
-python run.py --agent-strategy tool-calling --env retail --model gpt-4o --model-provider openai --max-concurrency 10 --user-model gpt-4o --user-model-provider openai --user-strategy reflection
-```
-
-This strategy uses a subsequent LLM verification step to check if the user simulator's response is satisfactory. If not, the user simulator will be prompted to reflect on its response and generate a new response.
-
-## Auto error identification
-
-Often times, it is difficult and time consuming to manually identify specific error locations in trajectories as they can be long and the constraints can be complex. We have provided an auto error identification tool that can do the following:
-
-1. Fault assignment: determine the entity that is responsible for the fault (user, agent, environment)
-2. Fault type classification: classify the type of fault (goal_partially_completed, used_wrong_tool, used_wrong_tool_argument, took_unintended_action)
-
-Both of the labels are accompanied with a description.
-
-To run the auto error identification, run:
-
-```bash
-python auto_error_identification.py --env <airline/retail> --platform openai --results-path <the path to your results file here> --max-concurrency 16 --output-path test-auto-error-identification --max-num-failed-results 10
-```
-
-Please note that this feature utilizes an LLM, which may lead to inaccurate error identifications.
-
-*Notice: If an error is raised due to the structure of your results file, you may have to rerun the benchmark to produce a new results file. We have recently [rewritten](https://github.com/sierra-research/tau-bench/commit/043b544371757ebb3762b3d02a6675dfe0c41798) the benchmark to be more type-safe and extensible.
-
-## Historical trajectories
-
-τ-bench might be expensive to run. We have provided a set of historical trajectories for the airline and retail environments in `./historical_trajectories`.
-
-If you would like to contribute your historical trajectories to this benchmark, please submit a PR!
+- Doesn't send `temperature` to Anthropic models, because current Claude models reject sampling parameters.
+- Loads API keys from `.env` through `python-dotenv`.
+- Adds `mcp` as a dependency, which recent versions of `litellm` need.
 
 ## License
 
-See `./LICENSE`.
-
-## Contact
-
-Please submit issues or pull requests if you find problems with the benchmark.
+MIT, as in the original τ-bench. See [`LICENSE`](LICENSE).
 
 ## Citation
+
+This work builds on τ-bench. If you use it, please cite the original papers:
 
 ```bibtex
 @misc{yao2024tau,
