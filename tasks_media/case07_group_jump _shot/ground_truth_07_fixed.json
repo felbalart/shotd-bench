@@ -1,0 +1,240 @@
+{
+  "task_id": "07",
+  "constraints": {
+    "goal": {
+      "value": "group_jump_shot",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "framing": {
+      "value": "full_body",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "arrangement": {
+      "value": "side_by_side",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "camera": {
+      "value": {
+        "height": "below",
+        "distance": "far",
+        "angle": "front",
+        "orientation": "landscape"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "lighting": {
+      "value": {
+        "quality": "hard",
+        "direction": "front"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "environment": {
+      "value": {
+        "setting": "outdoor",
+        "scene_type": "mountain_summit",
+        "key_elements": [
+          "sky",
+          "mountain_range"
+        ],
+        "background": "sky",
+        "background_clutter": "clean",
+        "time_of_day": "golden_hour"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "subjects": [
+      {
+        "id": "person_1",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.17,
+            "y": 0.61
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "jumping",
+            "body_orientation": "front",
+            "torso": "upright",
+            "head": "straight",
+            "left_arm": "extended_sideways",
+            "right_arm": "extended_diagonal_down",
+            "legs": "split_mid_air",
+            "interaction": "synchronized_action"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "excited",
+            "intensity": "strong",
+            "mouth": "smile_with_teeth",
+            "eyes": "open",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      },
+      {
+        "id": "person_2",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.33,
+            "y": 0.68
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "jumping",
+            "body_orientation": "front",
+            "torso": "upright",
+            "head": "straight",
+            "left_arm": "extended_sideways",
+            "right_arm": "extended_sideways",
+            "legs": "bent_tucked",
+            "interaction": "synchronized_action"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "excited",
+            "intensity": "strong",
+            "mouth": "smile_with_teeth",
+            "eyes": "open",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      },
+      {
+        "id": "person_3",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.47,
+            "y": 0.64
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "jumping",
+            "body_orientation": "front",
+            "torso": "upright",
+            "head": "straight",
+            "left_arm": "raised_diagonal_up",
+            "right_arm": "raised_diagonal_up",
+            "legs": "straight_down",
+            "interaction": "synchronized_action"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "excited",
+            "intensity": "strong",
+            "mouth": "smile_with_teeth",
+            "eyes": "open",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      },
+      {
+        "id": "person_4",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.66,
+            "y": 0.6
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "jumping",
+            "body_orientation": "front",
+            "torso": "upright",
+            "head": "straight",
+            "left_arm": "relaxed_down",
+            "right_arm": "raised_overhead",
+            "legs": "bent_tucked",
+            "interaction": "synchronized_action"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "excited",
+            "intensity": "strong",
+            "mouth": "smile_with_teeth",
+            "eyes": "open",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      },
+      {
+        "id": "person_5",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.79,
+            "y": 0.6
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "jumping",
+            "body_orientation": "front",
+            "torso": "upright",
+            "head": "straight",
+            "left_arm": "extended_sideways",
+            "right_arm": "raised_diagonal_up",
+            "legs": "split_mid_air",
+            "interaction": "synchronized_action"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "excited",
+            "intensity": "strong",
+            "mouth": "smile_with_teeth",
+            "eyes": "open",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      }
+    ]
+  }
+}

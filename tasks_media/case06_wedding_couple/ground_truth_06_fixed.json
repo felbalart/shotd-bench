@@ -1,0 +1,128 @@
+{
+  "task_id": "06",
+  "constraints": {
+    "goal": {
+      "value": "romantic_couple_portrait",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "framing": {
+      "value": "half_body",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "arrangement": {
+      "value": "cluster",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "camera": {
+      "value": {
+        "height": "below",
+        "distance": "close",
+        "angle": "front",
+        "orientation": "portrait"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "lighting": {
+      "value": {
+        "quality": "soft",
+        "direction": "any"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "environment": {
+      "value": {
+        "setting": "outdoor",
+        "scene_type": "heritage_terrace",
+        "key_elements": [
+          "sky"
+        ],
+        "background": "sky",
+        "background_clutter": "clean",
+        "time_of_day": "daytime"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "subjects": [
+      {
+        "id": "person_1",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.32,
+            "y": 0.6
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "standing",
+            "body_orientation": "three_quarter_to_camera_right",
+            "torso": "upright",
+            "head": "lean_in_to_other_subject",
+            "left_arm": "around_other_subject",
+            "right_arm": "relaxed_down",
+            "legs": "not_visible",
+            "interaction": "forehead_touch"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "romantic",
+            "intensity": "moderate",
+            "mouth": "smile_with_teeth",
+            "eyes": "closed",
+            "gaze": "other_subject"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      },
+      {
+        "id": "person_2",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.62,
+            "y": 0.6
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "standing",
+            "body_orientation": "three_quarter_to_camera_left",
+            "torso": "upright",
+            "head": "lean_in_to_other_subject",
+            "left_arm": "around_other_subject",
+            "right_arm": "raised_holding_object",
+            "legs": "not_visible",
+            "interaction": "forehead_touch"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "joyful",
+            "intensity": "strong",
+            "mouth": "smile_with_teeth",
+            "eyes": "closed",
+            "gaze": "other_subject"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      }
+    ]
+  }
+}

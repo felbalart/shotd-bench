@@ -8,7 +8,7 @@ The tasks come from [shotdirector-benchmark](https://github.com/felbalart/shotdi
 
 1. The simulated user states their goal. The reference photo and the scene photo are attached to their first message. The user simulator sees the same photos, so it can answer questions about its own scene.
 2. The agent can ask the user questions, then calls the `submit_photography_plan` tool. The plan covers framing and composition, lighting, background, subject and pose, camera settings, and ordered steps. Submitting the plan ends the conversation.
-3. An LLM judge sees the goal, both photos, the task's ground truth and the plan, and decides pass or fail for each of the task's required plan elements. The reward is 1 only if every element passes. If the agent never submits a plan, the reward is 0.
+3. An LLM judge sees the goal, both photos and the plan, and decides pass or fail for each of the task's required plan elements. The reward is 1 only if every element passes. The element score, the fraction of elements that passed, is reported too. If the agent never submits a plan, both are 0.
 
 ## Setup
 
@@ -26,7 +26,7 @@ ANTHROPIC_API_KEY=...
 ## Run
 
 ```bash
-python run.py --task-ids 0
+python run.py --task-ids 1
 ```
 
 By default, Claude Opus 5.5 (`claude-opus-5-5`) is the agent and the judge, and Claude Sonnet 5.5 (`claude-sonnet-5-5`) is the user simulator. Any model and provider that [litellm](https://docs.litellm.ai/docs/providers) supports can be used instead. It must accept images.
@@ -45,20 +45,22 @@ The terminal shows each task's judge verdicts. The results file holds each task'
 
 ## Tasks
 
-| Index | ID | Status | Description |
-| --- | --- | --- | --- |
-| 0 | c01 | Runnable | Professional LinkedIn headshot in a living room at night |
-| – | c02–c05 | Draft | Written from short descriptions; they need photos and a review |
+Each subfolder of [`tasks_media/`](tasks_media) is one task, and [`shotd_bench/tasks.py`](shotd_bench/tasks.py) loads them all, sorted by folder name. A task folder contains:
 
-Runnable tasks are in [`shotd_bench/tasks.py`](shotd_bench/tasks.py). Drafts are in [`shotd_bench/tasks_draft.py`](shotd_bench/tasks_draft.py) and are not run.
+- `ground_truth*.json`: the target constraints of the reference photo (goal, framing, arrangement, camera, lighting, environment, and each subject's position, pose and expression). Each constraint has a `value` and a `status`.
+- `initial.*`: the photo the user just took of their scene.
+- `reference.*`: the photo the user wants theirs to look like.
 
-To add a task, append a `Task` to `TASKS` with:
+Other files in the folder are ignored.
 
-- `task_id`, `goal_prompt` and `instruction` (the persona and goal given to the user simulator)
-- `reference_image_url` and `scene_image_url` (public image URLs)
-- `expected_state`, `required_plan_elements` and `constraints` (ground truth seen only by the judge)
+From the JSON, `tasks.py` derives:
 
-Photos can only be shared with the user's first message, so tasks where the agent asks the user to take a new photo partway through aren't supported yet.
+- **The required plan elements:** one per constraint and one per subject, skipping any with `status: "unknown"`, plus "Feasible actions based on the observed scene".
+- **The user simulator's instruction:** a fixed template filled in with the goal.
+
+`--task-ids` takes positions in this sorted list. To add a task, add a folder; no code changes are needed.
+
+Local images are sent to the models inline as base64, so each one must be under the provider's size limit (5 MB for Anthropic). Result files store image paths, not image data.
 
 ## Code
 
@@ -70,6 +72,7 @@ Photos can only be shared with the user's first message, so tasks where the agen
 | [`shotd_bench/judge.py`](shotd_bench/judge.py) | The LLM judge |
 | [`shotd_bench/tools.py`](shotd_bench/tools.py) | The `submit_photography_plan` tool schema |
 | [`shotd_bench/policy.md`](shotd_bench/policy.md) | The agent's system prompt |
+| [`shotd_bench/tasks.py`](shotd_bench/tasks.py) | Loads tasks from `tasks_media/` |
 | [`shotd_bench/types.py`](shotd_bench/types.py) | Task and result types |
 
 ## License

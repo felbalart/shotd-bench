@@ -1,3 +1,7 @@
+import base64
+import mimetypes
+import os
+from functools import lru_cache
 from typing import Any, Dict, List, Tuple
 
 from litellm import completion
@@ -16,11 +20,22 @@ Rules:
 - Try to make the conversation as natural as possible, and stick to the personality in the instruction."""
 
 
-def image_parts(labeled_urls: List[Tuple[str, str]]) -> List[Dict[str, Any]]:
+@lru_cache(maxsize=None)
+def image_url(src: str) -> str:
+    """Return src as a URL, inlining local files as base64 data URLs."""
+    if not os.path.exists(src):
+        return src
+    mime = mimetypes.guess_type(src)[0] or "image/png"
+    with open(src, "rb") as f:
+        return f"data:{mime};base64,{base64.b64encode(f.read()).decode()}"
+
+
+def image_parts(labeled_images: List[Tuple[str, str]], inline: bool = True) -> List[Dict[str, Any]]:
+    """Content parts for labeled images. With inline=False, local paths are kept as-is (for logs)."""
     parts: List[Dict[str, Any]] = []
-    for label, url in labeled_urls:
+    for label, src in labeled_images:
         parts.append({"type": "text", "text": label})
-        parts.append({"type": "image_url", "image_url": {"url": url}})
+        parts.append({"type": "image_url", "image_url": {"url": image_url(src) if inline else src}})
     return parts
 
 

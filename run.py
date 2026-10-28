@@ -41,7 +41,7 @@ def main() -> None:
 
     def _run(job: tuple[int, int]) -> RunResult:
         trial, idx = job
-        print(f"Running task {idx} ({TASKS[idx].task_id})")
+        print(f"Running task {idx} ({TASKS[idx].name})")
         try:
             res = run_rollout(
                 task=TASKS[idx],
@@ -62,7 +62,8 @@ def main() -> None:
                 traj=[],
             )
         status = "✅" if result.reward == 1 else "❌"
-        print(status, f"task {idx} ({TASKS[idx].task_id})", result.info.get("error", ""))
+        score = result.info.get("judge", {}).get("score", 0.0)
+        print(status, f"task {idx} ({TASKS[idx].name}) score {score:.2f}", result.info.get("error", ""))
         for verdict in result.info.get("judge", {}).get("elements", []):
             print("   ", "✔" if verdict["passed"] else "✘", verdict["element"], "—", verdict["reason"])
         return result
@@ -80,6 +81,8 @@ def main() -> None:
 def display_metrics(results: List[RunResult]) -> None:
     num_trials = len({r.trial for r in results})
     print(f"\n🏆 Average reward: {sum(r.reward for r in results) / len(results)}")
+    scores = [r.info.get("judge", {}).get("score", 0.0) for r in results]
+    print(f"📊 Average element score: {sum(scores) / len(scores):.2f}")
     # Pass^k from https://arxiv.org/abs/2406.12045
     successes: dict[int, int] = {}
     for r in results:

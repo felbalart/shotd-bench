@@ -5,15 +5,17 @@ from pydantic import BaseModel
 
 class Task(BaseModel):
     task_id: str
-    goal_prompt: str
+    # Name of the task's folder in tasks_media/
+    name: str
+    goal: str
     # Persona and goal given to the user simulator
     instruction: str
-    reference_image_url: Optional[str] = None
-    scene_image_url: Optional[str] = None
+    # Image file paths or URLs
+    reference_image: Optional[str] = None
+    scene_image: Optional[str] = None
     # Ground truth seen only by the judge
-    expected_state: Dict[str, Any] = {}
+    constraints: Dict[str, Any]
     required_plan_elements: List[str]
-    constraints: List[str] = []
 
 
 class ElementVerdict(BaseModel):
@@ -24,6 +26,8 @@ class ElementVerdict(BaseModel):
 
 class JudgeResult(BaseModel):
     reward: float
+    # Fraction of required plan elements that passed
+    score: float
     elements: List[ElementVerdict]
     judge_cost: Optional[float] = None
 

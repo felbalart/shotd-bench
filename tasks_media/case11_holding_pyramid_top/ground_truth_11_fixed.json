@@ -1,0 +1,91 @@
+{
+  "task_id": "11",
+  "constraints": {
+    "goal": {
+      "value": "forced_perspective_landmark",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "framing": {
+      "value": "full_body",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "arrangement": {
+      "value": null,
+      "status": "unknown",
+      "source": null
+    },
+    "camera": {
+      "value": {
+        "height": "below",
+        "distance": "medium",
+        "angle": "front",
+        "orientation": "landscape"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "lighting": {
+      "value": {
+        "quality": "hard",
+        "direction": "front"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "environment": {
+      "value": {
+        "setting": "outdoor",
+        "scene_type": "desert_landmark",
+        "key_elements": [
+          "pyramid"
+        ],
+        "background": "landmark",
+        "background_clutter": "moderate",
+        "time_of_day": "daytime"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "subjects": [
+      {
+        "id": "person_1",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.69,
+            "y": 0.5
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "standing",
+            "body_orientation": "front",
+            "torso": "upright",
+            "head": "straight",
+            "left_arm": "relaxed_down",
+            "right_arm": "pinching_landmark_tip",
+            "legs": "hip_width",
+            "interaction": "touching_landmark_illusion"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "excited",
+            "intensity": "moderate",
+            "mouth": "open_excited",
+            "eyes": "covered_by_sunglasses",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      }
+    ]
+  }
+}

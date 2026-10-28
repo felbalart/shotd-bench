@@ -1,39 +1,95 @@
-# Tasks from https://github.com/felbalart/shotdirector-benchmark (task_definition/ and tasks/)
+"""Loads tasks from tasks_media/. Each task folder holds a ground_truth*.json file,
+the user's current scene photo (initial.*) and the reference photo (reference.*)."""
+
+import glob
+import json
+import os
+from typing import Any, Dict, List, Optional
 
 from shotd_bench.types import Task
 
+TASKS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "tasks_media")
+
+INSTRUCTION = (
+    "You want to take a photo like your reference photo. Your goal: {goal}. "
+    "You are at the place shown in the photo you just took, and you will take the photo with your phone. "
+    "You want your photo to look as much like the reference as possible. "
+    "You are friendly and want clear, practical instructions."
+)
+
+# Ground truth constraints that become required plan elements, with their labels
+CONSTRAINT_LABELS = {
+    "goal": "Goal",
+    "framing": "Framing",
+    "arrangement": "Subject arrangement",
+    "camera": "Camera",
+    "lighting": "Lighting",
+    "environment": "Environment and background",
+}
+SUBJECT_LABELS = {
+    "position": "position in frame",
+    "pose": "pose",
+    "expression": "expression",
+}
+
+
+def known_value(constraint: Optional[Dict[str, Any]]) -> Any:
+    if not constraint or constraint.get("status") == "unknown":
+        return None
+    return constraint.get("value")
+
+
+def describe(value: Any) -> str:
+    if isinstance(value, dict):
+        return ", ".join(f"{k.replace('_', ' ')} {describe(v)}" for k, v in value.items())
+    if isinstance(value, list):
+        return " and ".join(describe(v) for v in value)
+    return str(value).replace("_", " ")
+
+
+def required_plan_elements(constraints: Dict[str, Any]) -> List[str]:
+    elements = []
+    for key, label in CONSTRAINT_LABELS.items():
+        value = known_value(constraints.get(key))
+        if value is not None:
+            elements.append(f"{label}: {describe(value)}")
+    for subject in constraints.get("subjects", []):
+        parts = []
+        for key, label in SUBJECT_LABELS.items():
+            value = known_value(subject.get(key))
+            if value is not None:
+                parts.append(f"{label}: {describe(value)}")
+        if parts:
+            elements.append(f"Subject {subject['id']}: " + "; ".join(parts))
+    elements.append("Feasible actions based on the observed scene")
+    return elements
+
+
+def find_image(folder: str, stem: str) -> Optional[str]:
+    matches = sorted(glob.glob(os.path.join(folder, f"{stem}.*")))
+    return matches[0] if matches else None
+
+
+def load_task(folder: str) -> Task:
+    (gt_path,) = glob.glob(os.path.join(folder, "ground_truth*.json"))
+    with open(gt_path) as f:
+        ground_truth = json.load(f)
+    constraints = ground_truth["constraints"]
+    goal = describe(known_value(constraints.get("goal")) or "a photo like the reference")
+    return Task(
+        task_id=ground_truth["task_id"],
+        name=os.path.basename(folder),
+        goal=goal,
+        instruction=INSTRUCTION.format(goal=goal),
+        reference_image=find_image(folder, "reference"),
+        scene_image=find_image(folder, "initial"),
+        constraints=constraints,
+        required_plan_elements=required_plan_elements(constraints),
+    )
+
+
 TASKS = [
-    Task(
-        task_id="c01",
-        goal_prompt="I want a professional headshot for my LinkedIn.",
-        instruction=(
-            "You want a professional headshot for your LinkedIn profile that looks polished, "
-            "approachable and suitable for a professional setting. You are at home in your living room "
-            "and will take the photo with your phone. You found a reference headshot in the style you like, "
-            "and you just took a photo of the room where you are. You can move yourself, the phone and the "
-            "furniture around the room. You are friendly and want clear, practical instructions."
-        ),
-        reference_image_url="https://images.squarespace-cdn.com/content/v1/5ec689480cc22c2d441e152f/1769094966114-SC6CYMZZOQ54RLHYV680/nlalor-photography-professional-headshot-2025-westport-ct-80.jpg",
-        scene_image_url="https://raw.githubusercontent.com/felbalart/shotdirector-benchmark/refs/heads/main/tasks/c01/input_resources/c01_img01.jpg",
-        expected_state={
-            "photography_context": "professional_linkedin_headshot",
-            "composition": {
-                "shot_type": "head_and_shoulders",
-                "subject_visibility": "face_and_shoulders_visible",
-            },
-            "lighting": {"goal": "clear_and_reasonably_even_facial_lighting"},
-            "background": {"goal": "clean_and_non_distracting"},
-            "pose": {"goal": "composed_and_approachable"},
-        },
-        required_plan_elements=[
-            "Appropriate framing for a professional headshot",
-            "Suitable lighting for clear facial visibility",
-            "A clean and non-distracting background",
-            "A composed yet approachable pose",
-            "Feasible actions based on the observed scene",
-        ],
-        constraints=[
-            "The plan must respect the physical conditions visible in the scene.",
-        ],
-    ),
+    load_task(folder)
+    for folder in sorted(glob.glob(os.path.join(TASKS_DIR, "*")))
+    if glob.glob(os.path.join(folder, "ground_truth*.json"))
 ]

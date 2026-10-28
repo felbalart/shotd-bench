@@ -25,10 +25,10 @@ def run_rollout(
 ) -> Dict[str, Any]:
     """Run one conversation between the agent and the simulated user, then judge the plan."""
     labeled_images = []
-    if task.reference_image_url:
-        labeled_images.append(("Reference photo of the result I want:", task.reference_image_url))
-    if task.scene_image_url:
-        labeled_images.append(("Photo I just took of where I am:", task.scene_image_url))
+    if task.reference_image:
+        labeled_images.append(("Reference photo of the result I want:", task.reference_image))
+    if task.scene_image:
+        labeled_images.append(("Photo I just took of where I am:", task.scene_image))
 
     user = UserSimulator(model=user_model, provider=user_provider)
     first_message = user.reset(instruction=task.instruction, labeled_images=labeled_images)
@@ -67,6 +67,7 @@ def run_rollout(
     if plan is None:
         result = JudgeResult(
             reward=0.0,
+            score=0.0,
             elements=[
                 ElementVerdict(element=e, passed=False, reason="No plan was submitted.")
                 for e in task.required_plan_elements
@@ -84,5 +85,10 @@ def run_rollout(
             "agent_cost": agent_cost,
             "user_cost": user.total_cost,
         },
-        "traj": messages,
+        # Log image paths instead of the inlined base64 data
+        "traj": [
+            messages[0],
+            {"role": "user", "content": [{"type": "text", "text": first_message}, *image_parts(labeled_images, inline=False)]},
+            *messages[2:],
+        ],
     }

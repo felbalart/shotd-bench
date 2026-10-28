@@ -1,0 +1,93 @@
+{
+  "task_id": "05",
+  "constraints": {
+    "goal": {
+      "value": "landmark_travel_portrait",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "framing": {
+      "value": "full_body",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "arrangement": {
+      "value": null,
+      "status": "unknown",
+      "source": null
+    },
+    "camera": {
+      "value": {
+        "height": "below",
+        "distance": "far",
+        "angle": "front",
+        "orientation": "portrait"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "lighting": {
+      "value": {
+        "quality": "hard",
+        "direction": "front"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "environment": {
+      "value": {
+        "setting": "outdoor",
+        "scene_type": "city_waterfront",
+        "key_elements": [
+          "skyscraper",
+          "water",
+          "ornate_railing"
+        ],
+        "background": "landmark",
+        "background_clutter": "moderate",
+        "time_of_day": "daytime"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "subjects": [
+      {
+        "id": "person_1",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.56,
+            "y": 0.77
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "standing",
+            "body_orientation": "front",
+            "torso": "upright",
+            "head": "straight",
+            "left_arm": "relaxed_down",
+            "right_arm": "holding_clothing",
+            "legs": "together",
+            "interaction": "none"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "confident",
+            "intensity": "subtle",
+            "mouth": "closed_smile",
+            "eyes": "covered_by_sunglasses",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      }
+    ]
+  }
+}

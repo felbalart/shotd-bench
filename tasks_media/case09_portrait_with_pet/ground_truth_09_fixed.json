@@ -1,0 +1,125 @@
+{
+  "task_id": "09",
+  "constraints": {
+    "goal": {
+      "value": "portrait_with_pet",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "framing": {
+      "value": "half_body",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "arrangement": {
+      "value": "cluster",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "camera": {
+      "value": {
+        "height": "eye_level",
+        "distance": "medium",
+        "angle": "front",
+        "orientation": "landscape"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "lighting": {
+      "value": {
+        "quality": "soft",
+        "direction": "front_left"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "environment": {
+      "value": {
+        "setting": "indoor",
+        "scene_type": "home_interior",
+        "key_elements": [
+          "sofa"
+        ],
+        "background": "interior",
+        "background_clutter": "moderate",
+        "time_of_day": "daytime"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "subjects": [
+      {
+        "id": "person_1",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.42,
+            "y": 0.54
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "sitting",
+            "body_orientation": "front",
+            "torso": "upright",
+            "head": "tilt_to_camera_right",
+            "left_arm": "around_other_subject",
+            "right_arm": "resting_on_other_subject",
+            "legs": "seated_bent",
+            "interaction": "pet_on_lap"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "happy",
+            "intensity": "moderate",
+            "mouth": "smile_with_teeth",
+            "eyes": "open",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      },
+      {
+        "id": "pet_1",
+        "type": "pet",
+        "position": {
+          "value": {
+            "x": 0.63,
+            "y": 0.6
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "species": "dog",
+            "stance": "lying_on_lap",
+            "body_orientation": "front",
+            "head": "facing_camera",
+            "interaction": "pet_on_lap"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "happy",
+            "intensity": "moderate",
+            "mouth": "open_relaxed",
+            "eyes": "open",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      }
+    ]
+  }
+}

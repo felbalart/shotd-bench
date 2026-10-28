@@ -1,0 +1,76 @@
+{
+  "task_id": "03",
+  "constraints": {
+    "goal": {
+      "value": "Create a playful full-body portrait in front of a recognizable fairytale castle, with an energetic one-leg balancing pose and cheerful expression.",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "framing": {
+      "value": "full_body",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "arrangement": {
+      "value": null,
+      "status": "unknown",
+      "source": null
+    },
+    "camera": {
+      "value": {
+        "height": "eye_level",
+        "distance": "far",
+        "angle": "front",
+        "orientation": "portrait"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "lighting": {
+      "value": {
+        "quality": "hard",
+        "direction": "any"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "environment": {
+      "value": {
+        "setting": "outdoor theme park in front of a fairytale castle",
+        "key_background_elements": [
+          "recognizable fairytale castle",
+          "main castle towers and spires"
+        ]
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "subjects": [
+      {
+        "id": "person_1",
+        "position": {
+          "value": null,
+          "status": "unknown",
+          "source": null
+        },
+        "pose": {
+          "value": {
+            "body": "playful one-leg balance with torso leaning sideways",
+            "arms": "arms extended diagonally in opposite directions",
+            "legs": "one supporting leg, other leg extended sideways"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "facial_expression": "cheerful natural smile",
+            "gaze_direction": "toward camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      }
+    ]
+  }
+}

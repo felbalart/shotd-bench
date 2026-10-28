@@ -1,0 +1,91 @@
+{
+  "task_id": "10",
+  "constraints": {
+    "goal": {
+      "value": "fan_photo_with_screen_figure",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "framing": {
+      "value": "half_body",
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "arrangement": {
+      "value": null,
+      "status": "unknown",
+      "source": null
+    },
+    "camera": {
+      "value": {
+        "height": "eye_level",
+        "distance": "medium",
+        "angle": "front",
+        "orientation": "landscape"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "lighting": {
+      "value": {
+        "quality": "soft",
+        "direction": "front"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "environment": {
+      "value": {
+        "setting": "indoor",
+        "scene_type": "mall_or_public_hall",
+        "key_elements": [
+          "screen_or_billboard_figure"
+        ],
+        "background": "display_screen",
+        "background_clutter": "moderate",
+        "time_of_day": "indoor_artificial"
+      },
+      "status": "inferred",
+      "source": "reference_image"
+    },
+    "subjects": [
+      {
+        "id": "person_1",
+        "type": "person",
+        "position": {
+          "value": {
+            "x": 0.27,
+            "y": 0.72
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "pose": {
+          "value": {
+            "stance": "standing",
+            "body_orientation": "front",
+            "torso": "lean_to_camera_right",
+            "head": "tilt_to_camera_right",
+            "left_arm": "relaxed_down",
+            "right_arm": "peace_sign_near_face",
+            "legs": "not_visible",
+            "interaction": "beside_screen_figure"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        },
+        "expression": {
+          "value": {
+            "emotion": "happy",
+            "intensity": "moderate",
+            "mouth": "smile_with_teeth",
+            "eyes": "open",
+            "gaze": "camera"
+          },
+          "status": "inferred",
+          "source": "reference_image"
+        }
+      }
+    ]
+  }
+}
